@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05060b">
+  <title>Happy Birthday — Spider-Man Edition 🕷️</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="is-loading">
+
+  <!-- =========================================================
+       INLINE SPIDER SVG DEFINITIONS
+       Tidak membutuhkan file gambar eksternal untuk karakter.
+  ========================================================== -->
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="spider-icon" viewBox="-12 -12 24 24">
+      <g fill="currentColor" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+        <ellipse rx="3.2" ry="4.5" cy="2.2"/>
+        <circle r="2.35" cy="-3.2"/>
+        <path fill="none" d="M-2-1L-9-7M-2 1L-10 1M-2 3L-9 9M-1.5 5L-6 11M2-1L9-7M2 1L10 1M2 3L9 9M1.5 5L6 11"/>
+      </g>
+    </symbol>
+
+    <symbol id="spidey-small" viewBox="0 0 120 180">
+      <g stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="60" cy="38" r="28" fill="#a90012" stroke="#050505" stroke-width="7"/>
+        <path d="M48 33 Q54 25 60 33 Q66 25 72 33" fill="none" stroke="#eaf7ff" stroke-width="6"/>
+        <path d="M60 65 C34 70 27 104 37 126 L25 162 M60 65 C86 70 93 104 83 126 L95 162" fill="none" stroke="#b70018" stroke-width="18"/>
+        <path d="M60 70 L45 111 M60 70 L75 111" stroke="#0b2c69" stroke-width="19"/>
+        <path d="M60 68 L60 114" stroke="#080808" stroke-width="4"/>
+        <path d="M44 83 L26 75 M76 83 L94 75 M43 94 L22 96 M77 94 L98 96" stroke="#080808" stroke-width="4"/>
+        <path d="M60 70 L60 104" stroke="#080808" stroke-width="4"/>
+      </g>
+    </symbol>
+
+    <symbol id="spidey-large" viewBox="0 0 500 700">
+      <g stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="250" cy="130" r="112" fill="#a90012" stroke="#030303" stroke-width="22"/>
+        <path d="M198 120 Q220 82 250 125 Q280 82 302 120" fill="none" stroke="#edf5ff" stroke-width="25"/>
+        <path d="M160 118 Q185 74 216 105 M340 118 Q315 74 284 105" fill="none" stroke="#0b0b0b" stroke-width="14"/>
+        <path d="M250 245 C145 255 88 365 128 455 L77 630 M250 245 C355 255 412 365 372 455 L423 630" fill="none" stroke="#b90018" stroke-width="82"/>
+        <path d="M250 250 L185 480 M250 250 L315 480" stroke="#0a2c6d" stroke-width="88"/>
+        <path d="M250 245 L250 465" stroke="#050505" stroke-width="18"/>
+        <path d="M171 312 L105 285 M329 312 L395 285 M160 360 L83 365 M340 360 L417 365 M160 407 L95 448 M340 407 L405 448" stroke="#050505" stroke-width="18"/>
+        <path d="M250 250 L250 420" stroke="#050505" stroke-width="18"/>
+      </g>
+    </symbol>
+
+    <symbol id="spidey-crouch" viewBox="0 0 320 250">
+      <g stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="160" cy="62" r="47" fill="#a90012" stroke="#030303" stroke-width="10"/>
+        <path d="M138 57 Q149 39 160 58 Q171 39 182 57" fill="none" stroke="#edf5ff" stroke-width="10"/>
+        <path d="M160 110 C115 108 74 130 42 175 M160 110 C205 108 246 130 278 175" fill="none" stroke="#b90018" stroke-width="34"/>
+        <path d="M160 112 L98 190 M160 112 L222 190" stroke="#0a2c6d" stroke-width="37"/>
+        <path d="M160 111 L160 175" stroke="#050505" stroke-width="8"/>
+        <path d="M122 130 L82 120 M198 130 L238 120 M110 150 L67 154 M210 150 L253 154" stroke="#050505" stroke-width="7"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <!-- Decorative web -->
+  <div class="web-corner web-corner--tl" aria-hidden="true"></div>
+  <div class="web-corner web-corner--br" aria-hidden="true"></div>
+  <div class="city-noise" aria-hidden="true"></div>
+
+  <!-- Floating characters: intentionally different sizes -->
+  <div class="spider-layer" aria-hidden="true">
+    <div class="spider spider--small">
+      <span class="spider-thread"></span>
+      <svg><use href="#spidey-small"></use></svg>
+    </div>
+
+    <div class="spider spider--giant">
+      <span class="spider-thread"></span>
+      <svg><use href="#spidey-large"></use></svg>
+    </div>
+
+    <div class="spider spider--medium">
+      <svg><use href="#spidey-crouch"></use></svg>
+    </div>
+  </div>
+
+  <!-- Web canvas -->
+  <canvas id="webCanvas" aria-hidden="true"></canvas>
+
+  <!-- Scroll progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Custom cursor -->
+  <div class="web-cursor" id="webCursor" aria-hidden="true">
+    <span></span>
+  </div>
+
+  <!-- =========================================================
+       PRELOADER
+       Penting: preloader TIDAK mengunci scroll permanen.
+  ========================================================== -->
+  <div class="preloader" id="preloader">
+    <div class="loader-web">
+      <div class="loader-spider">🕷️</div>
+    </div>
+    <p class="loader-eyebrow">SPIDER-SENSE</p>
+    <h2>TINGLING<span>...</span></h2>
+    <div class="loader-line"><span id="loaderBar"></span></div>
+    <p class="loader-note">Preparing your birthday mission</p>
+    <button class="start-btn" id="startBtn">ENTER THE CITY</button>
+    <p class="sound-note">🔊 Musik akan aktif setelah interaksi pertama karena aturan autoplay browser.</p>
+  </div>
+
+  <main id="site">
+
+    <!-- =======================================================
+         01 HERO
+    ======================================================== -->
+    <section class="chapter hero" id="chapter1">
+      <div class="hero-grid"></div>
+      <div class="hero-glow hero-glow--one"></div>
+      <div class="hero-glow hero-glow--two"></div>
+
+      <div class="inner hero-inner">
+        <div class="issue-label">
+          <span>THE DAILY BUGLE</span>
+          <span>VOL. 09 / SPECIAL EDITION</span>
+        </div>
+
+        <p class="kicker">EVERY HERO DESERVES A SPECIAL DAY.</p>
+
+        <button class="hero-title" id="heroTitle" type="button">
+          <span>HAPPY</span>
+          <strong>BIRTHDAY!</strong>
+        </button>
+
+        <p class="hero-subtitle">TO MY FAVORITE HUMAN IN THE WHOLE CITY.</p>
+
+        <button class="web-shooter" id="webShooter" type="button">
+          <span class="web-shooter__icon">✦</span>
+          <span>SHOOT THE WEB</span>
+        </button>
+
+        <div class="scroll-hint" id="scrollHint">
+          <span class="mouse"><i></i></span>
+          <span>SCROLL TO CONTINUE</span>
+        </div>
+      </div>
+
+      <div class="hero-buildings" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         02 GAME
+    ======================================================== -->
+    <section class="chapter mission" id="chapter2">
+      <div class="halftone"></div>
+      <div class="inner">
+        <div class="section-tag">ISSUE #02 — THE MISSION</div>
+        <h2 class="comic-heading">SAVE THE <span>GIFT!</span></h2>
+        <p class="section-copy">Three villains. One gift. One very important birthday.</p>
+
+        <div class="score-card">
+          <span>WEBS SHOT</span>
+          <strong><b id="webScore">0</b> / 3</strong>
+        </div>
+
+        <div class="arena" id="gameArena">
+          <div class="arena-lines"></div>
+
+          <div class="gift-preview" id="rewardBox">
+            <div class="gift-bow">✦</div>
+            <div class="gift-box-body"></div>
+          </div>
+
+          <button class="villain villain--one" data-id="1" aria-label="Kalahkan villain satu">🐙</button>
+          <button class="villain villain--two" data-id="2" aria-label="Kalahkan villain dua">🦎</button>
+          <button class="villain villain--three" data-id="3" aria-label="Kalahkan villain tiga">🦹</button>
+
+          <div class="web-hit" id="webHit"></div>
+
+          <div class="mission-msg" id="missionMsg">
+            <span class="mission-msg__badge">MISSION COMPLETE</span>
+            <h3>THE GIFT IS SAFE!</h3>
+            <p>Spider-Sense says there is something waiting for you.</p>
+            <button class="comic-btn" id="nextBtn" type="button">CONTINUE →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         03 GIFT
+    ======================================================== -->
+    <section class="chapter gift-section" id="chapter3">
+      <div class="inner">
+        <div class="section-tag">ISSUE #03 — CLASSIFIED PACKAGE</div>
+        <h2 class="comic-heading">UNLOCK YOUR <span>GIFT</span></h2>
+        <p class="section-copy">Drag the gift or tap it to release the web.</p>
+
+        <div class="gift-stage" id="giftStage">
+          <div class="gift-shadow"></div>
+
+          <div class="gift" id="gift" tabindex="0" role="button" aria-label="Buka kado">
+            <div class="gift-string gift-string--v"></div>
+            <div class="gift-string gift-string--h"></div>
+            <div class="gift-lid">
+              <div class="gift-bow"><i></i><i></i><b></b></div>
+            </div>
+            <div class="gift-body"></div>
+            <div class="gift-glow"></div>
+          </div>
+
+          <div class="drag-label" id="dragLabel">DRAG / TAP ME</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         04 GALLERY + LETTER
+    ======================================================== -->
+    <section class="chapter reveal-section" id="chapter4">
+      <div class="inner wide">
+        <div class="section-tag">ISSUE #04 — THE ARCHIVE</div>
+        <h2 class="comic-heading">MOMENTS WORTH <span>REMEMBERING</span></h2>
+
+        <div class="comic-layout">
+
+          <!-- Six actual image elements.
+               Letakkan file:
+               Fadly 1.png ... Fadly 6.png
+               di folder yang sama dengan index.html.
+          -->
+          <div class="comic-gallery" id="comicGallery">
+
+            <figure class="comic-card comic-card--wide">
+              <div class="comic-photo">
+                <img src="Fadly 1.jpeg" alt="Kenangan 1" loading="eager">
+                <span class="photo-number">01</span>
+              </div>
+              <figcaption>THE FIRST CHAPTER</figcaption>
+              <p>One little moment that became a beautiful story.</p>
+            </figure>
+
+            <figure class="comic-card comic-card--tall">
+              <div class="comic-photo">
+                <img src="Fadly 2.jpeg" alt="Kenangan 2" loading="lazy">
+                <span class="photo-number">02</span>
+              </div>
+              <figcaption>GOOD TIMES</figcaption>
+              <p>Some memories deserve their own panel.</p>
+            </figure>
+
+            <figure class="comic-card">
+              <div class="comic-photo">
+                <img src="Fadly 3.jpeg" alt="Kenangan 3" loading="lazy">
+                <span class="photo-number">03</span>
+              </div>
+              <figcaption>NO CAPE REQUIRED</figcaption>
+              <p>You make ordinary days feel special.</p>
+            </figure>
+
+            <figure class="comic-card comic-card--tall">
+              <div class="comic-photo">
+                <img src="Fadly 4.jpeg" alt="Kenangan 4" loading="lazy">
+                <span class="photo-number">04</span>
+              </div>
+              <figcaption>THE ADVENTURE</figcaption>
+              <p>More places, more laughs, more stories.</p>
+            </figure>
+
+            <figure class="comic-card">
+              <div class="comic-photo">
+                <img src="Fadly 5.jpeg" alt="Kenangan 5" loading="lazy">
+                <span class="photo-number">05</span>
+              </div>
+              <figcaption>BEST TEAM</figcaption>
+              <p>Every hero needs someone who gets them.</p>
+            </figure>
+
+            <figure class="comic-card comic-card--wide">
+              <div class="comic-photo">
+                <img src="Fadly 6.jpeg" alt="Kenangan 6" loading="lazy">
+                <span class="photo-number">06</span>
+              </div>
+              <figcaption>TO BE CONTINUED...</figcaption>
+              <p>The best part is that the story isn't over.</p>
+            </figure>
+
+          </div>
+
+          <!-- Letter -->
+          <div class="letter-scene">
+            <div class="rooftop-city"></div>
+
+            <div class="letter-wrap">
+              <article class="letter">
+                <div class="letter-head">
+                  <span>THE DAILY BUGLE</span>
+                  <b>TOP SECRET</b>
+                </div>
+
+                <div class="letter-body" id="letterBody">
+                  <h3>FOR MY FAVORITE PERSON,</h3>
+                  <p id="typewriterText"></p>
+                  <span class="caret" id="caret">|</span>
+                </div>
+
+                <div class="letter-foot">
+                  <span>— YOUR FRIENDLY NEIGHBORHOOD HUMAN</span>
+                </div>
+              </article>
+
+              <button class="music-btn" id="playSongBtn" type="button">
+                <span>♫</span>
+                <b id="musicText">PLAY OUR SONG</b>
+              </button>
+            </div>
+
+            <div class="crouch-spidey" aria-hidden="true">
+              <svg><use href="#spidey-crouch"></use></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         05 END
+    ======================================================== -->
+    <section class="chapter final-section" id="chapter5">
+      <div class="final-web"></div>
+      <div class="inner">
+        <div class="final-spider" aria-hidden="true">
+          <svg><use href="#spidey-large"></use></svg>
+        </div>
+
+        <p class="final-line">EVERY HERO HAS A STORY...</p>
+        <p class="final-line final-line--small">AND I'M GLAD YOU'RE PART OF MINE.</p>
+
+        <h2 class="final-big">
+          HAPPY BIRTHDAY
+          <span>SAYAANGGG!</span>
+          <i>♥</i>
+        </h2>
+
+        <button class="back-top" id="backTop" type="button">↟ BACK TO THE TOP</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Audio:
+       Ganti "lagu.mp3" dengan nama file musik Anda.
+       Taruh lagu.mp3 di folder yang sama dengan index.html.
+  -->
+  <audio id="bgAudio" loop preload="auto">
+    <source src="You & I - One Direction (Lyrics) ð__µ.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="audio-status" id="audioStatus" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
